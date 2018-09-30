@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="edu.iot.capricorn.dao.Top100Dao">
+	
+	<select id="count" resultType="int"><![CDATA[
+		select count(*) from top100
+	]]></select>
+	
+	<select id="getList" resultType="Top100"><![CDATA[
+		select * from top100
+		order by id
+	]]></select>
+	
+	<select id="findById" parameterType="Long" resultType="Top100"><![CDATA[
+		select * from top100 where id=#{id}
+	]]></select>
+	
+	<insert id="insert" parameterType="Top100"><![CDATA[
+		insert into top100 ( id, title, region, location, content,
+							address, home_page
+		
+		) values ( top100_seq.nextval, #{title}, #{region}, #{location}, #{content},
+					#{address}, #{homePage}
+		
+		)
+	]]></insert>
+	
+	<update id="update" parameterType="Top100"><![CDATA[
+		update top100 set
+			title=#{title},
+			region=#{region},
+			location=#{location},
+			content=#{content},
+			address=#{address},
+			home_page=#{homePage},
+			update_date=sysdate
+		where id=#{id}
+	]]></update>
+	
+	<delete id="delete" parameterType="Long"><![CDATA[
+		delete from top100
+		where id=#{id}
+	]]></delete>
+	
+	<select id="getPage" parameterType="map" resultType="Top100"><![CDATA[
+		select * from top100_pagination_view
+		where seq between #{start} and #{end}
+	]]></select>
+	
+	<select id="random" parameterType="int" resultType="Top100"><![CDATA[
+		select * from (
+			select * from top100
+			order by DBMS_RANDOM.RANDOM
+		) where rownum <= #{count}
+	]]></select>
+	
+</mapper>
+

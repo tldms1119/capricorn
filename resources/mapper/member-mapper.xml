@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="edu.iot.capricorn.dao.MemberDao">
+	
+	<!-- 밑의 태그를 지칭하는 풀 ID는 namespace + id -->
+	<select id="count" resultType="int"><![CDATA[
+		select count(*) from member
+	]]></select>
+	
+	<select id="getList" resultType="Member"><![CDATA[
+		select * from member
+	]]></select>
+	
+	<select id="findById" parameterType="string" resultType="Member"><![CDATA[
+		select * from member where user_id = #{userId}
+	]]></select>
+	
+	<insert id="insert" parameterType="Member"><![CDATA[
+		insert into member (
+			user_id, name, password, salt, email, user_level,
+			phone_number, nick_name, address
+		) values (
+			#{userId}, #{name}, #{password}, #{salt}, #{email}, #{userLevel},
+			#{phoneNumber}, #{nickName}, #{address}
+		)
+	]]></insert>
+	
+	<update id="update" parameterType="Member"><![CDATA[
+		update member set
+			email=#{email},
+			phone_number=#{phoneNumber},
+			nick_name=#{nickName},
+			address=#{address},
+			update_date=sysdate
+		where user_id=#{userId} and password=#{password}
+	]]></update>
+	
+	<update id="changePassword" parameterType="map"><![CDATA[
+		update member set
+			password=#{newPassword}
+		where user_id=#{userId} and password=#{oldPassword}
+	]]></update>
+	
+	<delete id="delete" parameterType="string"><![CDATA[
+		delete from member
+		where user_id = #{userId} 
+	]]></delete>
+	
+	<select id="getPage" parameterType="map" resultType="Member"><![CDATA[
+		select * from member_pagination_view
+		where seq between #{start} and #{end}
+	]]></select>
+	
+	<select id="search" parameterType="string" resultType="Member"><![CDATA[
+		select * from member
+		where user_id like #{word}
+	]]></select>
+	
+	<!-- <select id="search" parameterType="String" resultType="Member"><![CDATA[
+		CREATE OR REPLACE VIEW select_view  
+		AS 
+		select "SEQ","USER_ID","NAME","PASSWORD","USER_LEVEL","PHONE_NUMBER",
+				"NICK_NAME","EMAIL","ADDRESS","REG_DATE","UPDATE_DATE"
+		from (
+    		select row_number() over (order by reg_date desc) as seq,
+    				user_id, name, password, user_level, phone_number, nick_name, 
+    				email, address, reg_date, update_date
+    	from member
+    	where user_id like #{word}
+		)
+	]]></select>
+	
+	<select id="getSelectPage" parameterType="map" resultType="Member"><![CDATA[
+		select * from select_view
+		where seq between #{start} and #{end}
+	]]></select> -->
+	
+</mapper>
+
